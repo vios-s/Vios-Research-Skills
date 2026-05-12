@@ -84,7 +84,7 @@ To configure the hook manually, copy [`install/claude-code-hook.json`](./install
 | **Review & Dissemination** | `pre-submission-review`, `venue-reviewer` |
 | **Community & Infrastructure** | `gitbook-maintenance`, `skill-writer` |
 
-Browse human-readable previews on [GitBook](https://vios-lab.gitbook.io/vios-research-skills) — the same Markdown your agent reads, rendered for humans.
+Browse human-readable previews on [GitBook](https://app.gitbook.com/o/iKj8iQxX5VVQz0YId3W8/s/JrUZyt5iYQfdGE1vmZnd/) — the same Markdown your agent reads, rendered for humans.
 
 ---
 
@@ -104,7 +104,7 @@ You never call a skill explicitly — the agent picks the right one from context
 
 ## Contribute
 
-Lab members can edit existing skill content directly via [GitBook](https://vios-lab.gitbook.io/vios-research-skills) (changes sync to GitHub automatically), or open a PR for new skills.
+Lab members can edit existing skill content directly via [GitBook](https://app.gitbook.com/o/iKj8iQxX5VVQz0YId3W8/s/JrUZyt5iYQfdGE1vmZnd/) (changes sync to GitHub automatically), or open a PR for new skills.
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the `SKILL.md` template, frontmatter rules, and CI checks.
 

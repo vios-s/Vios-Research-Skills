@@ -1,8 +1,8 @@
 PLAN.md
-ss1.png
 __pycache__/
 *.py[cod]
 .venv/
 .DS_Store
 .idea/
 .vscode/
+.claude/
