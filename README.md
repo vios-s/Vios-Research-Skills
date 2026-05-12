@@ -4,7 +4,38 @@ A curated library of [Agent Skills](https://github.com/vercel-labs/ai-sdk-previe
 
 Each skill is a self-contained `SKILL.md` that any Agent-Skills-compatible client — **Claude Code, Cursor, Codex, Gemini CLI** — can install and invoke automatically when you describe a matching task.
 
-![Pipeline overview](assets/pipeline.svg)
+```mermaid
+flowchart TD
+    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e40af
+    classDef med  fill:#fce7f3,stroke:#ec4899,color:#9d174d
+    classDef plant fill:#d1fae5,stroke:#10b981,color:#065f46
+    classDef causal fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+    classDef cv   fill:#fef3c7,stroke:#f59e0b,color:#78350f
+    classDef infra fill:#f3f4f6,stroke:#9ca3af,color:#374151
+
+    A["🔍 Discovery & Monitoring\narxiv-digest"]:::pipe
+    B["📖 Reading & Analysis\nliterature-review · paper-analyst"]:::pipe
+    C["💡 Ideation & Hypothesis\nresearch-question-framing"]:::pipe
+    D["🔬 Methodology\nmetrics · ablation · code · tools"]:::pipe
+    E["✍️ Writing\nresearch-paper-writing · paper-rebuttal-helper"]:::pipe
+    F["🔎 Review & Dissemination\npre-submission-review · venue-reviewer"]:::pipe
+    G["⚙️ Community & Infrastructure\ngitbook-maintenance · skill-writer"]:::infra
+
+    A --> B --> C --> D --> E --> F --> G
+
+    subgraph domains["🎯 Domain Skills — use alongside any pipeline stage"]
+        direction LR
+        MI["🫀 Medical Imaging\ncardiac-mri-analysis\nfairness-medical-imaging\nmedical-image-synthesis"]:::med
+        PP["🌿 Plant Phenotyping\nplant-phenotyping"]:::plant
+        CA["🔗 Causality\ncausal-dag-builder · causal-discovery"]:::causal
+        CV["🖥️ Computer Vision\npytorch-segmentation"]:::cv
+    end
+
+    D -.->|use at any stage| MI
+    D -.-> PP
+    D -.-> CA
+    D -.-> CV
+```
 
 ---
 
