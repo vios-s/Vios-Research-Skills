@@ -15,7 +15,7 @@ Each entry in the sidebar is a self-contained skill module. The page you're read
 
 ## Scope
 
-Skills here follow the full research pipeline across eight stages:
+Skills here follow the full research pipeline across eleven stages:
 
 | Stage | What it covers |
 |-------|---------------|
@@ -30,6 +30,21 @@ Skills here follow the full research pipeline across eight stages:
 | **Writing** | Paper drafting, rebuttals, grant writing |
 | **Review & Dissemination** | Pre-submission checks, venue-specific review |
 | **Community & Infrastructure** | Adding skills, maintaining the library |
+
+## Skills at a glance
+
+| Category | Skills |
+|----------|--------|
+| Discovery & Monitoring | `arxiv-digest` |
+| Reading & Analysis | `literature-review`, `paper-analyst` |
+| Ideation & Hypothesis | `research-question-framing` |
+| Domain: Medical Imaging | `cardiac-mri-analysis`, `fairness-medical-imaging`, `medical-image-synthesis` |
+| Domain: Plant Phenotyping | `plant-phenotyping` |
+| Domain: Causality | `causal-dag-builder`, `causal-discovery` |
+| Domain: Computer Vision | `pytorch-segmentation` |
+| Writing | `research-paper-writing`, `paper-rebuttal-helper` |
+| Review & Dissemination | `pre-submission-review`, `venue-reviewer` |
+| Community & Infrastructure | `gitbook-maintenance`, `skill-writer` |
 
 ## Contributing
 
