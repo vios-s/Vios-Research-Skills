@@ -1,0 +1,4 @@
+root: ./skills/
+structure:
+  readme: SKILL.md
+  summary: SUMMARY.md

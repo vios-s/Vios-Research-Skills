@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lint-skills
+        name: Lint SKILL.md frontmatter
+        entry: python scripts/lint_skills.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-summary
+        name: Check SUMMARY.md is up to date
+        entry: python scripts/generate_summary.py --check
+        language: system
+        pass_filenames: false
+        always_run: true

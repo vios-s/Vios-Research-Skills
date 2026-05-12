@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx skills update --yes 2>/dev/null &"
+          }
+        ]
+      }
+    ]
+  }
+}
