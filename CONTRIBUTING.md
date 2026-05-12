@@ -51,6 +51,7 @@ One-paragraph human-facing summary. This is what GitBook readers see first.
   - `Domain: Medical Imaging`
   - `Writing`
   - `Review & Dissemination`
+  - `Community & Infrastructure`
 - `description`: must contain at least one trigger phrase ("Use this skill when…"). This is what the agent reads to decide whether to fire. Aim for 200–400 characters. Include positive examples and at least one negative ("Do not use for…").
 - `version`: semantic versioning, increment on substantive changes.
 - `author`: name + affiliation.

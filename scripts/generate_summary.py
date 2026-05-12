@@ -32,6 +32,7 @@ CATEGORY_ORDER = [
     "Domain: Medical Imaging",
     "Writing",
     "Review & Dissemination",
+    "Community & Infrastructure",
 ]
 
 

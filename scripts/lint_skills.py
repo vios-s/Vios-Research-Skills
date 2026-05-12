@@ -41,6 +41,7 @@ VALID_CATEGORIES = {
     "Domain: Medical Imaging",
     "Writing",
     "Review & Dissemination",
+    "Community & Infrastructure",
 }
 
 
