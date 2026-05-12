@@ -15,9 +15,24 @@
 
 * [Research Question Framing](research-question-framing/SKILL.md)
 
-## Methodology
+## Domain: Medical Imaging
+
+* [Cardiac Mri Analysis](cardiac-mri-analysis/SKILL.md)
+* [Fairness Medical Imaging](fairness-medical-imaging/SKILL.md)
+* [Medical Image Synthesis](medical-image-synthesis/SKILL.md)
+
+## Domain: Plant Phenotyping
+
+* [Plant Phenotyping](plant-phenotyping/SKILL.md)
+
+## Domain: Causality
 
 * [Causal Dag Builder](causal-dag-builder/SKILL.md)
+* [Causal Discovery](causal-discovery/SKILL.md)
+
+## Domain: Computer Vision
+
+* [Pytorch Segmentation](pytorch-segmentation/SKILL.md)
 
 ## Writing
 
@@ -32,3 +47,4 @@
 ## Community & Infrastructure
 
 * [Gitbook Maintenance](gitbook-maintenance/SKILL.md)
+* [Skill Writer](skill-writer/SKILL.md)

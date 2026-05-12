@@ -1,6 +1,6 @@
 ---
 name: causal-dag-builder
-category: Methodology
+category: "Domain: Causality"
 description: Use this skill when the user needs to construct, validate, or analyse a causal Directed Acyclic Graph (DAG) for a research problem. Triggers include "build a DAG for my study", "identify confounders", "is my causal effect identifiable", "backdoor criterion", "frontdoor criterion", "draw a causal graph", "what variables should I adjust for", "do I have hidden common causes", or any discussion involving SCMs, do-calculus, or causal inference methodology. Handles variable elicitation, DAG construction, d-separation, identification, and sensitivity analysis. Do not use for purely predictive/associational modelling without causal intent.
 version: 0.1.0
 author: VIOS Lab, University of Edinburgh

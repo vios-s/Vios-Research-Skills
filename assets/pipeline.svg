@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 520" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', monospace" font-size="12">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="520" fill="#f9fafb" rx="12"/>
+
+  <!-- Title -->
+  <text x="430" y="36" text-anchor="middle" font-size="16" font-weight="bold" fill="#111827">Vios Research Skills — Pipeline Overview</text>
+
+  <!-- ── Row 1: pipeline stages ── -->
+
+  <!-- Discovery & Monitoring -->
+  <rect x="20" y="64" width="160" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="100" y="86" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Discovery &amp;</text>
+  <text x="100" y="100" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Monitoring</text>
+  <text x="100" y="114" text-anchor="middle" fill="#3b82f6">arxiv-digest</text>
+
+  <!-- arrow -->
+  <line x1="182" y1="91" x2="208" y2="91" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Reading & Analysis -->
+  <rect x="210" y="64" width="160" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="290" y="86" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Reading &amp;</text>
+  <text x="290" y="100" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Analysis</text>
+  <text x="290" y="114" text-anchor="middle" fill="#3b82f6">literature-review · paper-analyst</text>
+
+  <!-- arrow -->
+  <line x1="372" y1="91" x2="398" y2="91" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Ideation & Hypothesis -->
+  <rect x="400" y="64" width="160" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="480" y="86" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Ideation &amp;</text>
+  <text x="480" y="100" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Hypothesis</text>
+  <text x="480" y="114" text-anchor="middle" fill="#3b82f6">research-question-framing</text>
+
+  <!-- arrow -->
+  <line x1="562" y1="91" x2="588" y2="91" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Methodology -->
+  <rect x="590" y="64" width="160" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="670" y="86" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Methodology</text>
+  <text x="670" y="100" text-anchor="middle" fill="#9ca3af" font-style="italic">metrics · ablation</text>
+  <text x="670" y="114" text-anchor="middle" fill="#9ca3af" font-style="italic">code · tools (coming soon)</text>
+
+  <!-- ── Divider ── -->
+  <line x1="20" y1="140" x2="840" y2="140" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="158" text-anchor="middle" font-size="11" fill="#6b7280" font-weight="bold" letter-spacing="1">DOMAIN  SKILLS</text>
+
+  <!-- ── Row 2: domain categories ── -->
+
+  <!-- Domain: Medical Imaging -->
+  <rect x="20" y="168" width="195" height="106" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="118" y="188" text-anchor="middle" font-weight="bold" fill="#be185d">Domain: Medical Imaging</text>
+  <text x="118" y="206" text-anchor="middle" fill="#db2777">cardiac-mri-analysis</text>
+  <text x="118" y="222" text-anchor="middle" fill="#db2777">fairness-medical-imaging</text>
+  <text x="118" y="238" text-anchor="middle" fill="#db2777">medical-image-synthesis</text>
+  <!-- icon -->
+  <text x="36" y="188" font-size="14">🫀</text>
+
+  <!-- Domain: Plant Phenotyping -->
+  <rect x="228" y="168" width="185" height="106" rx="8" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+  <text x="321" y="188" text-anchor="middle" font-weight="bold" fill="#065f46">Domain: Plant Phenotyping</text>
+  <text x="321" y="210" text-anchor="middle" fill="#059669">plant-phenotyping</text>
+  <text x="321" y="228" text-anchor="middle" fill="#9ca3af" font-style="italic">(PhenoAssistant · GMT · traits)</text>
+  <text x="244" y="188" font-size="14">🌿</text>
+
+  <!-- Domain: Causality -->
+  <rect x="426" y="168" width="185" height="106" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="519" y="188" text-anchor="middle" font-weight="bold" fill="#4c1d95">Domain: Causality</text>
+  <text x="519" y="208" text-anchor="middle" fill="#6d28d9">causal-dag-builder</text>
+  <text x="519" y="226" text-anchor="middle" fill="#6d28d9">causal-discovery</text>
+  <text x="442" y="188" font-size="14">🔗</text>
+
+  <!-- Domain: Computer Vision -->
+  <rect x="624" y="168" width="215" height="106" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="732" y="188" text-anchor="middle" font-weight="bold" fill="#92400e">Domain: Computer Vision</text>
+  <text x="732" y="208" text-anchor="middle" fill="#b45309">pytorch-segmentation</text>
+  <text x="732" y="226" text-anchor="middle" fill="#9ca3af" font-style="italic">(more coming soon)</text>
+  <text x="640" y="188" font-size="14">👁</text>
+
+  <!-- ── Divider ── -->
+  <line x1="20" y1="288" x2="840" y2="288" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <!-- ── Row 3: writing & dissemination ── -->
+
+  <!-- Writing -->
+  <rect x="20" y="300" width="260" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="150" y="322" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Writing</text>
+  <text x="150" y="340" text-anchor="middle" fill="#3b82f6">research-paper-writing</text>
+  <text x="150" y="356" text-anchor="middle" fill="#3b82f6">paper-rebuttal-helper</text>
+
+  <!-- arrow -->
+  <line x1="282" y1="335" x2="308" y2="335" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Review & Dissemination -->
+  <rect x="310" y="300" width="260" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="440" y="322" text-anchor="middle" font-weight="bold" fill="#1d4ed8">Review &amp; Dissemination</text>
+  <text x="440" y="340" text-anchor="middle" fill="#3b82f6">pre-submission-review</text>
+  <text x="440" y="356" text-anchor="middle" fill="#3b82f6">venue-reviewer</text>
+
+  <!-- arrow -->
+  <line x1="572" y1="335" x2="598" y2="335" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Community & Infrastructure -->
+  <rect x="600" y="300" width="240" height="70" rx="8" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="720" y="322" text-anchor="middle" font-weight="bold" fill="#374151">Community &amp;</text>
+  <text x="720" y="338" text-anchor="middle" font-weight="bold" fill="#374151">Infrastructure</text>
+  <text x="720" y="356" text-anchor="middle" fill="#6b7280">gitbook-maintenance · skill-writer</text>
+
+  <!-- ── Legend ── -->
+  <rect x="20" y="396" width="820" height="110" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="430" y="416" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">HOW SKILLS ARE INSTALLED AND INVOKED</text>
+
+  <!-- Install row -->
+  <rect x="40" y="428" width="180" height="32" rx="6" fill="#1f2937"/>
+  <text x="130" y="448" text-anchor="middle" fill="#f9fafb" font-size="11">npx skills add vios-s/...</text>
+
+  <line x1="222" y1="444" x2="255" y2="444" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="257" y="428" width="160" height="32" rx="6" fill="#1f2937"/>
+  <text x="337" y="444" text-anchor="middle" fill="#f9fafb" font-size="11">~/.agents/skills/</text>
+
+  <line x1="419" y1="444" x2="452" y2="444" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="454" y="428" width="175" height="32" rx="6" fill="#1f2937"/>
+  <text x="542" y="444" text-anchor="middle" fill="#f9fafb" font-size="11">AI agent reads description</text>
+
+  <line x1="631" y1="444" x2="664" y2="444" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="666" y="428" width="174" height="32" rx="6" fill="#059669"/>
+  <text x="753" y="444" text-anchor="middle" fill="#f9fafb" font-size="11">Skill invoked on match</text>
+
+  <!-- Compatible clients -->
+  <text x="40" y="490" font-size="11" fill="#6b7280">Compatible with:</text>
+  <text x="145" y="490" font-size="11" fill="#374151" font-weight="bold">Claude Code · Cursor · Codex · Gemini CLI</text>
+  <text x="620" y="490" text-anchor="end" font-size="11" fill="#6b7280">GitBook: </text>
+  <text x="622" y="490" font-size="11" fill="#374151">skills are rendered as human-readable docs</text>
+</svg>
