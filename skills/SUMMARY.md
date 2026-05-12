@@ -2,7 +2,10 @@
 
 * [Vios Research Skills](SKILL.md)
 
-## Skills
+## Discovery & Monitoring
 
 * [Arxiv Digest](arxiv-digest/SKILL.md)
+
+## Reading & Analysis
+
 * [Literature Review](literature-review/SKILL.md)

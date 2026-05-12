@@ -1,5 +1,6 @@
 ---
 name: arxiv-digest
+category: Discovery & Monitoring
 version: 0.1.0
 author: VIOS Lab, University of Edinburgh
 license: MIT

@@ -3,9 +3,10 @@
 
 Checks:
   - YAML frontmatter exists and parses.
-  - Required fields present: name, description.
+  - Required fields present: name, description, category.
   - `name` matches the folder name (kebab-case).
   - `description` is at least 100 chars and starts with "Use this skill".
+  - `category` is one of the recognised pipeline stages.
   - SKILL.md body contains an H1.
 
 Exits non-zero with a summary of failures.
@@ -28,9 +29,19 @@ except ImportError:
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
 
-REQUIRED_FIELDS = ("name", "description")
+REQUIRED_FIELDS = ("name", "description", "category")
 DESCRIPTION_MIN_CHARS = 100
 DESCRIPTION_PREFIX = "Use this skill"
+
+VALID_CATEGORIES = {
+    "Discovery & Monitoring",
+    "Reading & Analysis",
+    "Ideation & Hypothesis",
+    "Methodology",
+    "Domain: Medical Imaging",
+    "Writing",
+    "Review & Dissemination",
+}
 
 
 def lint_skill(skill_md: Path) -> list[str]:
@@ -58,7 +69,7 @@ def lint_skill(skill_md: Path) -> list[str]:
             f"frontmatter `name: {fm['name']}` does not match folder name `{folder_name}`"
         )
 
-    desc = fm.get("description", "")
+    desc = str(fm.get("description", ""))
     if desc:
         if len(desc) < DESCRIPTION_MIN_CHARS:
             errors.append(
@@ -66,6 +77,11 @@ def lint_skill(skill_md: Path) -> list[str]:
             )
         if not desc.startswith(DESCRIPTION_PREFIX):
             errors.append(f'description should start with "{DESCRIPTION_PREFIX}"')
+
+    category = fm.get("category", "")
+    if category and category not in VALID_CATEGORIES:
+        valid = ", ".join(f'"{c}"' for c in sorted(VALID_CATEGORIES))
+        errors.append(f'unknown category "{category}". Valid values: {valid}')
 
     body = text[fm_match.end():]
     if not re.search(r"^#\s+\S", body, re.MULTILINE):

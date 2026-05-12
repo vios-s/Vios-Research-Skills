@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx skills update --yes 2>/dev/null &"
+            "command": "node -e \"const{spawn}=require('child_process');spawn('npx',['skills','update','--yes'],{detached:true,stdio:'ignore',shell:true}).unref()\""
           }
         ]
       }

@@ -12,6 +12,7 @@
 ```markdown
 ---
 name: skill-name-in-kebab-case
+category: Discovery & Monitoring  # pick one of the 7 pipeline stages
 description: Use this skill when [trigger]. Triggers include "[example phrasing 1]", "[example phrasing 2]". Handles [scope of what the skill does]. Do not use for [out-of-scope cases].
 version: 0.1.0
 author: Your Name, VIOS Lab
@@ -42,6 +43,14 @@ One-paragraph human-facing summary. This is what GitBook readers see first.
 ## Frontmatter conventions
 
 - `name`: kebab-case, must match the folder name.
+- `category`: one of the seven pipeline stages — determines which section of the GitBook sidebar your skill appears in. Valid values:
+  - `Discovery & Monitoring`
+  - `Reading & Analysis`
+  - `Ideation & Hypothesis`
+  - `Methodology`
+  - `Domain: Medical Imaging`
+  - `Writing`
+  - `Review & Dissemination`
 - `description`: must contain at least one trigger phrase ("Use this skill when…"). This is what the agent reads to decide whether to fire. Aim for 200–400 characters. Include positive examples and at least one negative ("Do not use for…").
 - `version`: semantic versioning, increment on substantive changes.
 - `author`: name + affiliation.

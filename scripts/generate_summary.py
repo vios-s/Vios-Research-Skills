@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Regenerate skills/SUMMARY.md from the SKILL.md files in skills/.
 
+Skills are grouped by the `category:` frontmatter field. The category order
+is defined by CATEGORY_ORDER below; unknown categories go to a trailing
+"Uncategorised" group. Within each category, skills are sorted alphabetically.
+
 Usage:
     python scripts/generate_summary.py            # write SUMMARY.md
     python scripts/generate_summary.py --check    # exit non-zero if out of date
@@ -11,51 +15,82 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
 SUMMARY_PATH = SKILLS_DIR / "SUMMARY.md"
 
+# Canonical pipeline order for categories.
+# Skills whose category doesn't appear here land in "Uncategorised".
+CATEGORY_ORDER = [
+    "Discovery & Monitoring",
+    "Reading & Analysis",
+    "Ideation & Hypothesis",
+    "Methodology",
+    "Domain: Medical Imaging",
+    "Writing",
+    "Review & Dissemination",
+]
+
+
+def parse_frontmatter(text: str) -> dict[str, str]:
+    fm_match = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
+    if not fm_match:
+        return {}
+    fm: dict[str, str] = {}
+    for line in fm_match.group(1).splitlines():
+        m = re.match(r"^(\w[\w-]*):\s*(.+)$", line)
+        if m:
+            fm[m.group(1)] = m.group(2).strip().strip('"').strip("'")
+    return fm
+
 
 def extract_title(skill_md: Path) -> str:
-    """Return the human-readable title from a SKILL.md.
-
-    Priority: frontmatter `title:` > frontmatter `name:` (humanised) > first H1.
-    """
     text = skill_md.read_text(encoding="utf-8")
+    fm = parse_frontmatter(text)
+
+    if "title" in fm:
+        return fm["title"]
+    if "name" in fm:
+        return " ".join(w.capitalize() for w in fm["name"].split("-"))
 
     fm_match = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
-    if fm_match:
-        fm = fm_match.group(1)
-        title_match = re.search(r"^title:\s*(.+)$", fm, re.MULTILINE)
-        if title_match:
-            return title_match.group(1).strip().strip('"').strip("'")
-        name_match = re.search(r"^name:\s*(.+)$", fm, re.MULTILINE)
-        if name_match:
-            name = name_match.group(1).strip().strip('"').strip("'")
-            return " ".join(w.capitalize() for w in name.split("-"))
-
     body = text[fm_match.end():] if fm_match else text
-    h1_match = re.search(r"^#\s+(.+)$", body, re.MULTILINE)
-    if h1_match:
-        return h1_match.group(1).strip()
+    h1 = re.search(r"^#\s+(.+)$", body, re.MULTILINE)
+    if h1:
+        return h1.group(1).strip()
 
     return skill_md.parent.name
 
 
 def build_summary() -> str:
-    lines = ["# Summary", "", "* [Vios Research Skills](SKILL.md)", "", "## Skills", ""]
-    skill_dirs = sorted(p for p in SKILLS_DIR.iterdir() if p.is_dir())
-    for d in skill_dirs:
+    buckets: dict[str, list[tuple[str, str]]] = defaultdict(list)
+
+    for d in sorted(p for p in SKILLS_DIR.iterdir() if p.is_dir()):
         skill_md = d / "SKILL.md"
         if not skill_md.exists():
             print(f"warning: {d} has no SKILL.md — skipping", file=sys.stderr)
             continue
+        text = skill_md.read_text(encoding="utf-8")
+        fm = parse_frontmatter(text)
+        category = fm.get("category", "Uncategorised")
         title = extract_title(skill_md)
-        rel = f"{d.name}/SKILL.md"
-        lines.append(f"* [{title}]({rel})")
-    lines.append("")
+        buckets[category].append((title, f"{d.name}/SKILL.md"))
+
+    lines = ["# Summary", "", "* [Vios Research Skills](SKILL.md)", ""]
+
+    ordered = [c for c in CATEGORY_ORDER if c in buckets]
+    extra = sorted(c for c in buckets if c not in CATEGORY_ORDER)
+
+    for category in ordered + extra:
+        lines.append(f"## {category}")
+        lines.append("")
+        for title, rel in buckets[category]:
+            lines.append(f"* [{title}]({rel})")
+        lines.append("")
+
     return "\n".join(lines)
 
 

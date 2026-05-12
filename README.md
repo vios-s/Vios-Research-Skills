@@ -6,29 +6,27 @@ Each skill is a self-contained `SKILL.md` that any Agent-Skills-compatible clien
 
 ## Install
 
-Install all skills:
-
-```
+```bash
 npx skills add vios-s/Vios-Research-Skills
-```
-
-Install a single skill:
-
-```
-npx skills add vios-s/Vios-Research-Skills/<skill-name>
 ```
 
 ## Auto-update
 
-Run this once to keep skills current every time you start Claude Code:
+Run once to keep skills current every time you start Claude Code:
 
+**macOS / Linux**
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/main/install/setup.sh)
 ```
 
-Or copy [`install/claude-code-hook.json`](./install/claude-code-hook.json) manually into your `~/.claude/settings.json`.
+**Windows (PowerShell)**
+```powershell
+irm https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/main/install/setup.ps1 | iex
+```
 
-The hook runs `npx skills update --yes` in the background on every session start — silent on failure (e.g. offline).
+Both scripts install the skills and add a Claude Code `SessionStart` hook that runs `npx skills update` silently in the background on every session start. The hook uses a cross-platform Node.js call, so it works on macOS, Linux, and Windows without modification.
+
+To configure the hook manually, copy [`install/claude-code-hook.json`](./install/claude-code-hook.json) into your `~/.claude/settings.json`.
 
 ## Browse
 

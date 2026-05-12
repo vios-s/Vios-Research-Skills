@@ -1,5 +1,6 @@
 ---
 name: literature-review
+category: Reading & Analysis
 description: Use this skill when the user asks to find, screen, summarise, or synthesise academic literature on a topic. Triggers include "find papers on X", "literature review of X", "what does the field say about X", "summarise these arXiv links", or providing a list of DOIs/arXiv IDs. Handles search-term decomposition, multi-source triage (arXiv, PubMed, OpenAlex, Semantic Scholar), screening for relevance and quality, and structured synthesis with proper citations.
 version: 0.1.0
 author: VIOS Lab, University of Edinburgh
