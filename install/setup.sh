@@ -45,6 +45,7 @@ ensure_profile_loads_nvm() {
   mkdir -p "$(dirname "$profile")"
   touch "$profile"
 
+  # shellcheck disable=SC2016 -- intentional: checking for literal string, not expansion
   if ! grep -qs 'NVM_DIR="$HOME/.nvm"' "$profile"; then
     cat >> "$profile" <<'EOF'
 

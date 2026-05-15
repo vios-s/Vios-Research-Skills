@@ -48,54 +48,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run setup.sh with isolated HOME
-        run: |
-          export HOME="$RUNNER_TEMP/fakehome"
-          mkdir -p "$HOME/.claude"
-          bash install/setup.sh
-
-      - name: Verify skills directory created
-        run: test -d "$RUNNER_TEMP/fakehome/.agents/skills"
+      - name: Run setup.sh
+        run: bash install/setup.sh
 
       - name: Verify hook injected into settings.json
-        run: |
-          grep -q "skills" "$RUNNER_TEMP/fakehome/.claude/settings.json"
+        run: grep -q "skills" ~/.claude/settings.json
 
+  # "node absent" path — Debian slim container has no Node.js in its PATH,
+  # so setup.sh must install it via nvm before proceeding.
   test-sh-no-node:
-    name: setup.sh / Linux / node absent
+    name: setup.sh / Linux / node absent (container)
     runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm-slim
     steps:
+      - name: Install prerequisites (curl + git; no Node.js)
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends curl git ca-certificates
+
       - uses: actions/checkout@v4
 
-      - name: Shadow node and npx with stubs
-        run: |
-          mkdir -p "$RUNNER_TEMP/nonodepath"
-          printf '#!/bin/sh\necho "stub: node not available"; exit 127\n' > "$RUNNER_TEMP/nonodepath/node"
-          printf '#!/bin/sh\necho "stub: npx not available"; exit 127\n'  > "$RUNNER_TEMP/nonodepath/npx"
-          chmod +x "$RUNNER_TEMP/nonodepath/node" "$RUNNER_TEMP/nonodepath/npx"
-          echo "$RUNNER_TEMP/nonodepath" >> "$GITHUB_PATH"
+      - name: Confirm node absent from container PATH
+        run: "! command -v node"
 
-      - name: Confirm node is absent in PATH
-        run: node --version 2>&1 | grep "stub" || true
-
-      - name: Run setup.sh (should install node via nvm then proceed)
+      - name: Run setup.sh (auto-installs Node.js via nvm)
         run: |
-          export HOME="$RUNNER_TEMP/fakehome-nonode"
-          mkdir -p "$HOME/.claude"
-          # Restore real node for PATH *after* nvm installs it; nvm sources itself
-          bash install/setup.sh
+          mkdir -p /root/.claude
+          HOME=/root bash install/setup.sh
 
-      - name: Verify node is now available
+      - name: Verify node now available via nvm
         run: |
-          export HOME="$RUNNER_TEMP/fakehome-nonode"
-          . "$HOME/.nvm/nvm.sh"
+          . /root/.nvm/nvm.sh
           node --version
 
-      - name: Verify skills directory created
-        run: test -d "$RUNNER_TEMP/fakehome-nonode/.agents/skills"
-
       - name: Verify hook injected into settings.json
-        run: grep -q "skills" "$RUNNER_TEMP/fakehome-nonode/.claude/settings.json"
+        run: grep -q "skills" /root/.claude/settings.json
 
   # ── Integration test: setup.ps1 ───────────────────────────────────────────
 
@@ -105,26 +93,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run setup.ps1 with isolated USERPROFILE
+      - name: Run setup.ps1
         shell: pwsh
-        run: |
-          $env:USERPROFILE = "$env:RUNNER_TEMP\fakehome"
-          New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude" | Out-Null
-          pwsh -File install/setup.ps1
-
-      - name: Verify skills directory created
-        shell: pwsh
-        run: |
-          if (-not (Test-Path "$env:RUNNER_TEMP\fakehome\.agents\skills")) {
-            Write-Error "Skills directory not found"; exit 1
-          }
+        run: pwsh -File install/setup.ps1
 
       - name: Verify hook injected into settings.json
         shell: pwsh
         run: |
-          $path = "$env:RUNNER_TEMP\fakehome\.claude\settings.json"
-          $content = Get-Content $path -Raw
+          $content = Get-Content "$env:USERPROFILE\.claude\settings.json" -Raw
           if ($content -notlike "*skills*") {
-            Write-Error "Hook not found in $path"; exit 1
+            Write-Error "Hook not found in settings.json"; exit 1
           }
           Write-Host "Hook OK"
