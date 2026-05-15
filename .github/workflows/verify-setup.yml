@@ -1,0 +1,163 @@
+name: Verify setup scripts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "install/**"
+      - ".github/workflows/verify-setup.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "install/**"
+      - ".github/workflows/verify-setup.yml"
+
+jobs:
+  # ── Static analysis ────────────────────────────────────────────────────────
+
+  shellcheck:
+    name: ShellCheck (setup.sh)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: "./install"
+          severity: warning
+          ignore_paths: "install/setup.ps1"
+
+  psscriptanalyzer:
+    name: PSScriptAnalyzer (setup.ps1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyse setup.ps1
+        run: |
+          pwsh -Command "
+            Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction Stop
+            \$results = Invoke-ScriptAnalyzer -Path install/setup.ps1 -Severity Error,Warning
+            \$results | Format-Table RuleName,Severity,Line,Message -AutoSize
+            if (\$results) { exit 1 }
+          "
+
+  # ── Integration tests: setup.sh ───────────────────────────────────────────
+
+  test-sh:
+    name: setup.sh / ${{ matrix.os }} / node ${{ matrix.node-present && 'present' || 'absent' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            node-present: true
+          - os: macos-latest
+            node-present: true
+    env:
+      FAKE_HOME: ${{ runner.temp }}/fakehome
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare isolated home
+        run: mkdir -p "$FAKE_HOME/.claude"
+
+      - name: Run setup.sh
+        run: HOME="$FAKE_HOME" bash install/setup.sh
+
+      - name: Verify — skills directory created
+        run: test -d "$FAKE_HOME/.agents/skills"
+
+      - name: Verify — hook injected into settings.json
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const p = process.env.FAKE_HOME + '/.claude/settings.json';
+          const s = JSON.parse(fs.readFileSync(p, 'utf8'));
+          const hooks = (s.hooks?.SessionStart ?? []);
+          const ok = hooks.some(e =>
+            (e.hooks ?? []).some(h => typeof h.command === 'string' && h.command.includes('skills'))
+          );
+          if (!ok) { console.error('Hook not found in', p); process.exit(1); }
+          console.log('Hook OK:', JSON.stringify(hooks, null, 2));
+          EOF
+        env:
+          FAKE_HOME: ${{ runner.temp }}/fakehome
+
+  test-sh-no-node:
+    name: setup.sh / Linux / node absent (container)
+    runs-on: ubuntu-latest
+    container:
+      image: debian:bookworm-slim
+    steps:
+      - name: Install minimal prerequisites (no Node.js)
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends curl git ca-certificates bash
+          # Confirm node is absent
+          ! command -v node
+
+      - uses: actions/checkout@v4
+
+      - name: Run setup.sh (should auto-install Node.js via nvm)
+        run: |
+          mkdir -p /tmp/fakehome/.claude
+          HOME=/tmp/fakehome bash install/setup.sh
+
+      - name: Verify — node available after script
+        run: command -v node
+
+      - name: Verify — skills directory created
+        run: test -d /tmp/fakehome/.agents/skills
+
+      - name: Verify — hook injected into settings.json
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const s = JSON.parse(fs.readFileSync('/tmp/fakehome/.claude/settings.json', 'utf8'));
+          const hooks = s.hooks?.SessionStart ?? [];
+          const ok = hooks.some(e =>
+            (e.hooks ?? []).some(h => typeof h.command === 'string' && h.command.includes('skills'))
+          );
+          if (!ok) { console.error('Hook not found'); process.exit(1); }
+          console.log('Hook OK');
+          EOF
+
+  # ── Integration test: setup.ps1 ───────────────────────────────────────────
+
+  test-ps1:
+    name: setup.ps1 / Windows / node present
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare isolated USERPROFILE
+        run: |
+          $fakeHome = "$env:RUNNER_TEMP\fakehome"
+          New-Item -ItemType Directory -Force "$fakeHome\.claude" | Out-Null
+          # Expose to subsequent steps
+          "FAKE_HOME=$fakeHome" | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
+
+      - name: Run setup.ps1
+        run: |
+          $env:USERPROFILE = $env:FAKE_HOME
+          pwsh -File install/setup.ps1
+        shell: pwsh
+
+      - name: Verify — skills directory created
+        run: Test-Path "$env:FAKE_HOME\.agents\skills" | Should -Be $true
+        shell: pwsh
+
+      - name: Verify — hook injected into settings.json
+        run: |
+          $path = "$env:FAKE_HOME\.claude\settings.json"
+          $s = Get-Content $path | ConvertFrom-Json
+          $hooks = $s.hooks.SessionStart
+          $found = $hooks | ForEach-Object { $_.hooks } |
+                   Where-Object { $_.command -like "*skills*" }
+          if (-not $found) {
+            Write-Error "Hook not found in $path"
+            exit 1
+          }
+          Write-Host "Hook OK"
+        shell: pwsh
