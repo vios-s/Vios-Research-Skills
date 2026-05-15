@@ -92,9 +92,11 @@ ensure_node() {
   fi
 
   echo "==> Installing Node.js LTS..."
+  set +u  # nvm shell functions use unbound variables internally
   nvm install --lts
   nvm use --lts
   nvm alias default 'lts/*' >/dev/null
+  set -u
 
   if ! has_node_tools; then
     echo "Error: Node.js was installed, but node and npx are not both available." >&2
