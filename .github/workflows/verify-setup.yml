@@ -20,11 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ludeeus/action-shellcheck@2.0.0
+      - uses: ludeeus/action-shellcheck@master
         with:
           scandir: "./install"
           severity: warning
-          ignore_paths: "install/setup.ps1"
 
   psscriptanalyzer:
     name: PSScriptAnalyzer (setup.ps1)
@@ -32,27 +31,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Analyse setup.ps1
+        shell: pwsh
         run: |
-          pwsh -Command "
-            Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction Stop
-            \$results = Invoke-ScriptAnalyzer -Path install/setup.ps1 -Severity Error,Warning
-            \$results | Format-Table RuleName,Severity,Line,Message -AutoSize
-            if (\$results) { exit 1 }
-          "
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -ErrorAction Stop
+          $results = Invoke-ScriptAnalyzer -Path install/setup.ps1 -Severity Error
+          $results | Format-Table RuleName,Severity,Line,Message -AutoSize
+          if ($results) { exit 1 }
 
   # ── Integration tests: setup.sh ───────────────────────────────────────────
 
   test-sh:
-    name: setup.sh / ${{ matrix.os }} / node ${{ matrix.node-present && 'present' || 'absent' }}
+    name: setup.sh / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            node-present: true
-          - os: macos-latest
-            node-present: true
+        os: [ubuntu-latest, macos-latest]
     env:
       FAKE_HOME: ${{ runner.temp }}/fakehome
     steps:
@@ -68,20 +62,20 @@ jobs:
         run: test -d "$FAKE_HOME/.agents/skills"
 
       - name: Verify — hook injected into settings.json
+        env:
+          FAKE_HOME: ${{ runner.temp }}/fakehome
         run: |
           node - <<'EOF'
           const fs = require('fs');
           const p = process.env.FAKE_HOME + '/.claude/settings.json';
           const s = JSON.parse(fs.readFileSync(p, 'utf8'));
-          const hooks = (s.hooks?.SessionStart ?? []);
+          const hooks = s.hooks?.SessionStart ?? [];
           const ok = hooks.some(e =>
             (e.hooks ?? []).some(h => typeof h.command === 'string' && h.command.includes('skills'))
           );
           if (!ok) { console.error('Hook not found in', p); process.exit(1); }
-          console.log('Hook OK:', JSON.stringify(hooks, null, 2));
+          console.log('Hook OK');
           EOF
-        env:
-          FAKE_HOME: ${{ runner.temp }}/fakehome
 
   test-sh-no-node:
     name: setup.sh / Linux / node absent (container)
@@ -93,7 +87,6 @@ jobs:
         run: |
           apt-get update -qq
           apt-get install -y --no-install-recommends curl git ca-certificates bash
-          # Confirm node is absent
           ! command -v node
 
       - uses: actions/checkout@v4
@@ -125,39 +118,39 @@ jobs:
   # ── Integration test: setup.ps1 ───────────────────────────────────────────
 
   test-ps1:
-    name: setup.ps1 / Windows / node present
+    name: setup.ps1 / Windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Prepare isolated USERPROFILE
+        shell: pwsh
         run: |
           $fakeHome = "$env:RUNNER_TEMP\fakehome"
           New-Item -ItemType Directory -Force "$fakeHome\.claude" | Out-Null
-          # Expose to subsequent steps
           "FAKE_HOME=$fakeHome" | Out-File -FilePath $env:GITHUB_ENV -Append
-        shell: pwsh
 
       - name: Run setup.ps1
+        shell: pwsh
         run: |
           $env:USERPROFILE = $env:FAKE_HOME
           pwsh -File install/setup.ps1
-        shell: pwsh
 
       - name: Verify — skills directory created
-        run: Test-Path "$env:FAKE_HOME\.agents\skills" | Should -Be $true
         shell: pwsh
+        run: |
+          if (-not (Test-Path "$env:FAKE_HOME\.agents\skills")) {
+            Write-Error "Skills directory not found"; exit 1
+          }
+          Write-Host "Skills directory OK"
 
       - name: Verify — hook injected into settings.json
+        shell: pwsh
         run: |
           $path = "$env:FAKE_HOME\.claude\settings.json"
           $s = Get-Content $path | ConvertFrom-Json
-          $hooks = $s.hooks.SessionStart
-          $found = $hooks | ForEach-Object { $_.hooks } |
+          $found = $s.hooks.SessionStart |
+                   ForEach-Object { $_.hooks } |
                    Where-Object { $_.command -like "*skills*" }
-          if (-not $found) {
-            Write-Error "Hook not found in $path"
-            exit 1
-          }
+          if (-not $found) { Write-Error "Hook not found in $path"; exit 1 }
           Write-Host "Hook OK"
-        shell: pwsh
