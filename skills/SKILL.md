@@ -11,7 +11,7 @@ Each entry in the sidebar is a self-contained skill module. The page you're read
 ## How to use this library
 
 - **As a human:** browse the sidebar, copy snippets, suggest edits via the pencil icon (top-right) or a GitHub PR.
-- **As an AI client:** `npx skills add vios-s/Vios-Research-Skills` drops the skills into your agent's skills directory. Compatible with Claude Code, Cursor, Codex, and Gemini CLI.
+- **As an AI client:** `npx skills add vios-s/Vios-Research-Skills` drops the skills into your agent's skills directory if Node.js is already installed. New users can run the setup script in the repository README, which checks for `node` and `npx` and installs Node.js LTS first when needed. Compatible with Claude Code, Cursor, Codex, and Gemini CLI.
 
 ## Scope
 
@@ -22,7 +22,6 @@ Skills here follow the full research pipeline across eleven stages:
 | **Discovery & Monitoring** | Finding and tracking papers, monitoring arXiv |
 | **Reading & Analysis** | Deep reading of single papers, critical evaluation |
 | **Ideation & Hypothesis** | Framing questions, sharpening hypotheses |
-| **Methodology** | Experimental design, metrics selection, ablation studies, Python code, tool invocation |
 | **Domain: Medical Imaging** | Fairness, synthesis, cardiac MRI |
 | **Domain: Plant Phenotyping** | Leaf segmentation, trait estimation, PhenoAssistant |
 | **Domain: Causality** | Causal DAGs, causal discovery, identifiability, counterfactuals, SCMs |

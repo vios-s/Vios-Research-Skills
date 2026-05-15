@@ -41,11 +41,15 @@ flowchart TD
 
 ## Quick start
 
+If you already have Node.js installed:
+
 ```bash
 npx skills add vios-s/Vios-Research-Skills
 ```
 
 That's it. The skills drop into `~/.agents/skills/` and your AI agent starts using them on the next session.
+
+If you do not know whether Node.js is installed, use the setup script below instead. It checks for `node` and `npx`, then installs Node.js LTS first when needed.
 
 ---
 
@@ -63,7 +67,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/
 irm https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/main/install/setup.ps1 | iex
 ```
 
-Both scripts install the skills and register a Claude Code `SessionStart` hook that runs `npx skills update --yes` silently in the background on every session. The hook uses a cross-platform Node.js call — no shell differences between macOS, Linux, and Windows.
+Both scripts install Node.js LTS if `node` or `npx` is missing, install the skills, and register a Claude Code `SessionStart` hook that runs `npx skills update --yes` silently in the background on every session. On macOS/Linux the script uses `nvm`; on Windows it uses `winget` when Node.js is not already available. The hook uses a cross-platform Node.js call — no shell differences between macOS, Linux, and Windows.
 
 To configure the hook manually, copy [`install/claude-code-hook.json`](./install/claude-code-hook.json) into your `~/.claude/settings.json`.
 
