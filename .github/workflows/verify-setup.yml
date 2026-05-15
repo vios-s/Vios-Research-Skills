@@ -79,7 +79,8 @@ jobs:
 
       - name: Verify node now available via nvm
         run: |
-          . /root/.nvm/nvm.sh
+          export NVM_DIR=/root/.nvm
+          . "$NVM_DIR/nvm.sh"
           node --version
 
       - name: Verify hook injected into settings.json
