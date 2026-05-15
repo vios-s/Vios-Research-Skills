@@ -30,8 +30,10 @@ profile_file() {
 load_nvm() {
   export NVM_DIR
   if [ -s "$NVM_DIR/nvm.sh" ]; then
+    set +u  # nvm.sh uses unbound variables internally; restore after sourcing
     # shellcheck disable=SC1091
     . "$NVM_DIR/nvm.sh"
+    set -u
   fi
 }
 
@@ -45,7 +47,8 @@ ensure_profile_loads_nvm() {
   mkdir -p "$(dirname "$profile")"
   touch "$profile"
 
-  # shellcheck disable=SC2016 -- intentional: checking for literal string, not expansion
+  # Intentional: checking for the literal string $HOME/.nvm, not an expansion.
+  # shellcheck disable=SC2016
   if ! grep -qs 'NVM_DIR="$HOME/.nvm"' "$profile"; then
     cat >> "$profile" <<'EOF'
 

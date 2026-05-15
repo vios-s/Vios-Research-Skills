@@ -9,7 +9,7 @@
 $ErrorActionPreference = "Stop"
 
 $REPO     = "vios-s/Vios-Research-Skills"
-$SETTINGS = Join-Path $env:USERPROFILE ".claude\settings.json"
+$SettingsPath = Join-Path $env:USERPROFILE ".claude\settings.json"
 $HOOK_CMD = "node -e `"const{spawn}=require('child_process');spawn('npx',['skills','update','--yes'],{detached:true,stdio:'ignore',shell:true}).unref()`""
 
 function Update-ProcessPath {
@@ -62,12 +62,12 @@ npx skills add $REPO
 Write-Host "==> Configuring Claude Code auto-update hook..."
 
 # Ensure settings.json exists
-if (-not (Test-Path $SETTINGS)) {
-    New-Item -ItemType Directory -Force -Path (Split-Path $SETTINGS) | Out-Null
-    '{}' | Set-Content $SETTINGS -Encoding UTF8NoBOM
+if (-not (Test-Path $SettingsPath)) {
+    New-Item -ItemType Directory -Force -Path (Split-Path $SettingsPath) | Out-Null
+    '{}' | Set-Content $SettingsPath -Encoding UTF8NoBOM
 }
 
-$raw      = Get-Content $SETTINGS -Raw -Encoding UTF8
+$raw      = Get-Content $SettingsPath -Raw -Encoding UTF8
 $settings = $raw | ConvertFrom-Json
 
 # Build nested structure if missing
@@ -92,8 +92,8 @@ if ($alreadyPresent) {
 } else {
     $newHook  = [PSCustomObject]@{ hooks = @([PSCustomObject]@{ type = "command"; command = $HOOK_CMD }) }
     $settings.hooks.SessionStart = @($settings.hooks.SessionStart) + $newHook
-    $settings | ConvertTo-Json -Depth 10 | Set-Content $SETTINGS -Encoding UTF8NoBOM
-    Write-Host "  Hook added to $SETTINGS"
+    $settings | ConvertTo-Json -Depth 10 | Set-Content $SettingsPath -Encoding UTF8NoBOM
+    Write-Host "  Hook added to $SettingsPath"
 }
 
 Write-Host ""
