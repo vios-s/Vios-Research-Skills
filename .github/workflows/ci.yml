@@ -25,3 +25,6 @@ jobs:
 
       - name: Check SUMMARY.md is up to date
         run: python scripts/generate_summary.py --check
+
+      - name: Check eidf-job skill against its bundled templates
+        run: python scripts/check_eidf_job.py

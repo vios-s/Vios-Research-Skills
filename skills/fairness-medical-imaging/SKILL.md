@@ -1,10 +1,11 @@
 ---
 name: fairness-medical-imaging
-category: "Domain: Medical Imaging"
 description: Use this skill when the user is investigating bias, fairness, shortcut learning, or protected-attribute effects in a medical imaging model. Triggers include "my model is biased towards X", "check for shortcut learning", "fairness analysis for my segmentation model", "does my classifier depend on site/scanner", "evaluate performance across demographic subgroups", "concept erasure for medical images", or "detect spurious correlations in medical AI". Handles bias diagnosis, protected attribute analysis, fairness metric selection, mitigation strategy, and evaluation protocol. Do not use for general model evaluation without a fairness hypothesis — use pre-submission-review or paper-analyst instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Domain: Medical Imaging"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Fairness in Medical Imaging

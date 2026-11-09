@@ -13,6 +13,7 @@
 
 ## Ideation & Hypothesis
 
+* [Project Idea Pitch](project-idea-pitch/SKILL.md)
 * [Research Question Framing](research-question-framing/SKILL.md)
 
 ## Domain: Medical Imaging
@@ -37,12 +38,20 @@
 ## Writing
 
 * [Paper Rebuttal Helper](paper-rebuttal-helper/SKILL.md)
+* [Paper Skeleton Lock](paper-skeleton-lock/SKILL.md)
 * [Research Paper Writing](research-paper-writing/SKILL.md)
 
 ## Review & Dissemination
 
+* [Internal Meta Review](internal-meta-review/SKILL.md)
 * [Pre Submission Review](pre-submission-review/SKILL.md)
+* [Revision Lock Tracker](revision-lock-tracker/SKILL.md)
 * [Venue Reviewer](venue-reviewer/SKILL.md)
+
+## Lab Operations
+
+* [Eidf Job](eidf-job/SKILL.md)
+* [Theme Meeting Prep](theme-meeting-prep/SKILL.md)
 
 ## Community & Infrastructure
 

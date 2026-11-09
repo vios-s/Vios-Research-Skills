@@ -1,0 +1,17 @@
+{
+  "name": "vios-research-skills",
+  "owner": {
+    "name": "VIOS Lab, University of Edinburgh",
+    "url": "https://vios.science/"
+  },
+  "metadata": {
+    "description": "VIOS Lab research skills for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "vios-research-skills",
+      "source": "./",
+      "description": "Agent Skills for AI, causality and medical-imaging research: the full paper pipeline, VIOS stage gates, and EIDF GPU jobs."
+    }
+  ]
+}

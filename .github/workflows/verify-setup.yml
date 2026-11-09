@@ -62,10 +62,12 @@ jobs:
     container:
       image: debian:bookworm-slim
     steps:
-      - name: Install prerequisites (curl + git; no Node.js)
+      # libatomic1: runtime dependency of the official Node.js binaries
+      # (present on normal desktops/servers, missing from slim images).
+      - name: Install prerequisites (curl + git + libatomic1; no Node.js)
         run: |
           apt-get update -qq
-          apt-get install -y --no-install-recommends curl git ca-certificates
+          apt-get install -y --no-install-recommends curl git ca-certificates libatomic1
 
       - uses: actions/checkout@v4
 

@@ -1,10 +1,11 @@
 ---
 name: research-question-framing
-category: Ideation & Hypothesis
 description: Use this skill when the user wants to formulate, sharpen, or stress-test a research question or hypothesis. Triggers include "help me frame my research question", "is this a good research question", "turn this observation into a hypothesis", "what should I research about X", "I have a vague idea about Y", or "is this gap worth pursuing". Handles question decomposition, testability checks, and scope calibration. Do not use for literature searching or paper reading — use literature-review or paper-analyst instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Ideation & Hypothesis"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Research Question Framing

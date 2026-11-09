@@ -1,10 +1,11 @@
 ---
 name: venue-reviewer
-category: Review & Dissemination
 description: Use this skill when the user wants to evaluate a paper against specific venue acceptance criteria. Triggers include "will this be accepted at NeurIPS", "review from a MICCAI perspective", "what does Nature look for", "NeurIPS reproducibility checklist", "ICLR review criteria", "CVPR acceptance bar", "check for MICCAI requirements", "is this too incremental for ICML", or naming any specific conference or journal as a target. Applies venue-specific checklists and rejection-risk analysis. Covers NeurIPS, ICLR, ICML, CVPR/ICCV/ECCV, MICCAI, Nature family, IEEE TPAMI, and Medical Image Analysis. For a general pre-submission quality check before venue selection, use pre-submission-review first.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Review & Dissemination"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Venue Reviewer

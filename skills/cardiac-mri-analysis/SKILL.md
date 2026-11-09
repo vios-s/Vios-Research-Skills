@@ -1,10 +1,11 @@
 ---
 name: cardiac-mri-analysis
-category: "Domain: Medical Imaging"
 description: Use this skill when the user is working with cardiac MRI data — including segmentation, reconstruction, benchmarking, or active learning for MRI acquisition. Triggers include "segment the left ventricle", "benchmark my cardiac segmentation model", "reconstruct undersampled k-space", "active sampling for MRI", "evaluate on ACDC or UK Biobank", "self-supervised learning for cardiac MRI", or "how do I report Dice for cardiac structures". Handles segmentation evaluation, reconstruction quality, dataset conventions, and active sampling strategies. Do not use for general fairness audits — use fairness-medical-imaging instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Domain: Medical Imaging"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Cardiac MRI Analysis

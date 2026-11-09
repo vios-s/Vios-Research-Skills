@@ -1,10 +1,11 @@
 ---
 name: pre-submission-review
-category: Review & Dissemination
 description: Use this skill when the user wants a comprehensive quality check of a paper before submission. Triggers include "review my paper before I submit", "is this paper ready to submit", "check my paper for issues", "pre-submission check", "find weaknesses in my paper", or "what would a reviewer complain about". Acts as an honest internal reviewer covering completeness, logical consistency, experimental rigour, and writing quality. For venue-specific criteria after this general check, use venue-reviewer.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Review & Dissemination"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Pre-Submission Review
@@ -99,5 +100,6 @@ READINESS VERDICT: [Ready | Ready after blockers fixed | Needs significant work]
 ## See also
 
 - `venue-reviewer` for applying venue-specific criteria after this general check.
+- `internal-meta-review` for the VIOS scored meta-review and red-team (reasons to reject, checkmate questions).
 - `paper-rebuttal-helper` for when reviews arrive after submission.
 - `research-paper-writing` for rewriting sections flagged by this review.

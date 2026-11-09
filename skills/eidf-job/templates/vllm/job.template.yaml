@@ -1,0 +1,127 @@
+###############################################################################
+# vLLM serving Job — GROUP TEMPLATE (eidf105) for the EIDF GPU Service
+#
+# Copy this file, replace every <PLACEHOLDER>, then:
+#   kubectl -n eidf105ns create -f job.<you>.<project>.yaml
+#
+# The pod starts `vllm serve` immediately and exposes an OpenAI-compatible API
+# on port 8000. Reach it from your VM with port-forward (see README.md):
+#   kubectl -n eidf105ns port-forward <pod-name> 8000:8000
+#   curl http://localhost:8000/v1/models
+###############################################################################
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: vllm-<USERNAME_SAFE>-
+  labels:
+    kueue.x-k8s.io/queue-name: eidf105ns-user-queue
+    # Ownership labels — keep these: they record whose Job this is and
+    # what it's for (e.g. kubectl get jobs -l owner=<you>).
+    # 'project' is the strand of work this job is for — e.g. mri_recon,
+    # fairness — NOT the eidf105 group code, which is already implied by
+    # the namespace. Reuse one name across runs so usage reports group
+    # them (see kubmonitor docs/LABELS.md).
+    owner: "<USERNAME>"
+    project: "<RESEARCH_PROJECT>"
+    purpose: serving
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 0                      # a crashed serve = fail fast, don't retry
+  # ttlSecondsAfterFinished: 3600      # optional: auto-clean finished Jobs
+  template:
+    metadata:
+      labels:
+        app: vllm
+        owner: "<USERNAME>"            # kubectl get pods -l owner=<you>
+        project: "<RESEARCH_PROJECT>"
+        purpose: serving
+    spec:
+      restartPolicy: Never
+      # Run as YOUR uid/gid so NFS files are owned correctly.
+      # (No fsGroup: the NFS export is the whole share; fsGroup would trigger a
+      #  recursive chown of everything mounted.)
+      securityContext:
+        runAsUser: <USER_ID>
+        runAsGroup: <GROUP_ID>
+      # Pre-provisioned read-only robot account for the group, shared by everyone in it.
+      imagePullSecrets:
+        - name: <PULL_SECRET>
+      containers:
+        - name: vllm
+          image: registry.eidf.ac.uk/eidf105/vllm-eidf:latest
+          imagePullPolicy: Always
+          env:
+            # Make Python's print()/logging appear in `kubectl logs`
+            # immediately instead of being buffered until exit.
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: MODEL
+              value: "<MODEL>"                      # e.g. Qwen/Qwen2.5-7B-Instruct
+            - name: HF_HOME
+              value: "/data/users/<USERNAME>/hf-cache"   # persist weights on NFS
+            - name: HF_XET_HIGH_PERFORMANCE
+              value: "1"
+            # --- Gated models (Llama, etc.) need HF_TOKEN — see the
+            # envFrom/.env block below instead of hardcoding it here.
+            # --- Protect the endpoint with an API key ------------------------
+            # - name: VLLM_API_KEY
+            #   value: "change-me"
+          # Need secrets in your job (HF_TOKEN for gated models, etc.)? Keep
+          # them in a local .env file — never commit it, never bake it into
+          # the image (see README's "Managing secrets"). The wizard can wire
+          # this up for you, or by hand:
+          #   kubectl -n eidf105ns create secret generic my-env --from-env-file=.env
+          # then uncomment:
+          # envFrom:
+          #   - secretRef:
+          #       name: my-env
+          # <SECRET_ENV_HOOK>
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              exec vllm serve "$MODEL" \
+                --host 0.0.0.0 \
+                --port 8000 \
+                --tensor-parallel-size 1 \
+                --gpu-memory-utilization 0.90 \
+                --max-model-len 8192
+              # For reasoning models (Qwen3/3.5/3.6, DeepSeek-R1, ...) add:
+              #   --reasoning-parser qwen3
+              # to split the <think> chain into a separate `reasoning_content`
+              # field instead of inlining it in `content`.
+          ports:
+            - containerPort: 8000
+              name: http
+          # Marks the pod Ready only once the model is loaded and serving.
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 60          # allow up to ~10 min for weight load
+          resources:
+            requests:
+              cpu: 8
+              memory: 64Gi
+              nvidia.com/gpu: 1
+            limits:
+              cpu: 8
+              memory: 64Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - { name: dshm, mountPath: /dev/shm }
+            - { name: nfs,  mountPath: /data }
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
+        - name: nfs
+          nfs:
+            server: 10.24.2.112
+            path: /
+      # Pick a GPU type. Options include:
+      #   NVIDIA-H200                 NVIDIA-H100-80GB-HBM3
+      #   NVIDIA-A100-SXM4-80GB       NVIDIA-A100-SXM4-40GB
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3

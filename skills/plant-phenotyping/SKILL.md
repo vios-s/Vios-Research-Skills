@@ -1,10 +1,11 @@
 ---
 name: plant-phenotyping
-category: "Domain: Plant Phenotyping"
 description: Use this skill when the user is working on plant phenotyping with computer vision or AI agents — including leaf segmentation, trait estimation, conversational phenotyping systems, or multi-agent workflows for plant science. Triggers include "segment plant leaves", "count leaves automatically", "estimate plant traits from images", "build a phenotyping assistant", "leaf instance segmentation", "PhenoAssistant", "GMT for plant segmentation", or "multi-agent plant science pipeline". Do not use for generic instance segmentation not related to plants — use a general object detection skill instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Domain: Plant Phenotyping"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Plant Phenotyping

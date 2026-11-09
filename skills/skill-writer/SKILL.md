@@ -1,10 +1,11 @@
 ---
 name: skill-writer
-category: Community & Infrastructure
 description: Use this skill when the user wants to write a new skill for this library, improve an existing skill, or evaluate skill quality. Triggers include "help me write a skill", "improve this skill", "my skill is not firing", "the description is wrong", "refine this SKILL.md", "review this skill for quality", "why isn't this skill triggering", or when a user pastes a draft SKILL.md and asks for feedback. Do not use for maintaining library structure (SUMMARY.md, frontmatter CI) — use gitbook-maintenance instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Community & Infrastructure"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Skill Writer

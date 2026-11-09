@@ -3,11 +3,15 @@
 
 Checks:
   - YAML frontmatter exists and parses.
-  - Required fields present: name, description, category.
-  - `name` matches the folder name (kebab-case).
-  - `description` is at least 100 chars and starts with "Use this skill".
-  - `category` is one of the recognised pipeline stages.
-  - SKILL.md body contains an H1.
+  - Only fields allowed by the Agent Skills spec (agentskills.io) appear at
+    the top level; library fields (category, version, author) live under
+    `metadata`, whose values must be strings.
+  - Required fields present: name, description, metadata.category.
+  - `name` matches the folder name and the spec's charset (kebab-case, <= 64).
+  - `description` is 100-1024 chars and starts with "Use this skill".
+  - `compatibility`, if present, is at most 500 chars.
+  - `metadata.category` is one of the recognised pipeline stages.
+  - SKILL.md body contains an H1 and stays under 500 lines.
 
 Exits non-zero with a summary of failures.
 
@@ -29,8 +33,18 @@ except ImportError:
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
 
-REQUIRED_FIELDS = ("name", "description", "category")
+# Top-level fields allowed by the Agent Skills spec. `skills-ref validate`
+# rejects anything else, and strict clients (claude.ai, VS Code) may too.
+ALLOWED_FIELDS = {
+    "name", "description", "license", "compatibility", "metadata", "allowed-tools",
+}
+REQUIRED_FIELDS = ("name", "description")
+NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+NAME_MAX_CHARS = 64
 DESCRIPTION_MIN_CHARS = 100
+DESCRIPTION_MAX_CHARS = 1024
+COMPATIBILITY_MAX_CHARS = 500
+BODY_MAX_LINES = 500
 DESCRIPTION_PREFIX = "Use this skill"
 
 VALID_CATEGORIES = {
@@ -44,6 +58,7 @@ VALID_CATEGORIES = {
     "Domain: Computer Vision",
     "Writing",
     "Review & Dissemination",
+    "Lab Operations",
     "Community & Infrastructure",
 }
 
@@ -67,6 +82,29 @@ def lint_skill(skill_md: Path) -> list[str]:
         if field not in fm:
             errors.append(f"missing required frontmatter field: `{field}`")
 
+    unexpected = sorted(set(fm) - ALLOWED_FIELDS)
+    if unexpected:
+        errors.append(
+            f"unexpected top-level field(s) {', '.join(unexpected)}; "
+            "move them under `metadata:`"
+        )
+
+    metadata = fm.get("metadata") or {}
+    if not isinstance(metadata, dict):
+        errors.append("`metadata` must be a mapping")
+        metadata = {}
+    for key, value in metadata.items():
+        if not isinstance(value, str):
+            errors.append(f"metadata.{key} must be a string (quote it)")
+    if "category" not in metadata:
+        errors.append("missing required field: `metadata.category`")
+
+    name = str(fm.get("name", ""))
+    if name and (not NAME_RE.match(name) or len(name) > NAME_MAX_CHARS):
+        errors.append(
+            f"name `{name}` must be lowercase kebab-case, <= {NAME_MAX_CHARS} chars"
+        )
+
     folder_name = skill_md.parent.name
     if fm.get("name") and fm["name"] != folder_name:
         errors.append(
@@ -79,10 +117,18 @@ def lint_skill(skill_md: Path) -> list[str]:
             errors.append(
                 f"description too short ({len(desc)} chars, need >= {DESCRIPTION_MIN_CHARS})"
             )
+        if len(desc) > DESCRIPTION_MAX_CHARS:
+            errors.append(
+                f"description too long ({len(desc)} chars, max {DESCRIPTION_MAX_CHARS})"
+            )
         if not desc.startswith(DESCRIPTION_PREFIX):
             errors.append(f'description should start with "{DESCRIPTION_PREFIX}"')
 
-    category = fm.get("category", "")
+    compat = fm.get("compatibility")
+    if compat is not None and len(str(compat)) > COMPATIBILITY_MAX_CHARS:
+        errors.append(f"compatibility exceeds {COMPATIBILITY_MAX_CHARS} chars")
+
+    category = metadata.get("category", "")
     if category and category not in VALID_CATEGORIES:
         valid = ", ".join(f'"{c}"' for c in sorted(VALID_CATEGORIES))
         errors.append(f'unknown category "{category}". Valid values: {valid}')
@@ -90,6 +136,10 @@ def lint_skill(skill_md: Path) -> list[str]:
     body = text[fm_match.end():]
     if not re.search(r"^#\s+\S", body, re.MULTILINE):
         errors.append("body does not contain an H1 heading")
+    if len(body.splitlines()) > BODY_MAX_LINES:
+        errors.append(
+            f"body is over {BODY_MAX_LINES} lines; move detail into references/"
+        )
 
     return errors
 

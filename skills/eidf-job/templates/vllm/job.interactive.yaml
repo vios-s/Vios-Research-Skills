@@ -1,0 +1,94 @@
+###############################################################################
+# INTERACTIVE / DEBUG pod (eidf105) — keeps the container alive so you can
+# exec in and run `vllm serve` (or anything) by hand. Use job.template.yaml
+# instead for a real auto-starting service.
+#
+#   kubectl -n eidf105ns create -f job.interactive.yaml
+#   kubectl -n eidf105ns exec -it <pod-name> -- /bin/bash
+#   # inside: vllm serve <model> --host 0.0.0.0 --port 8000
+#   kubectl -n eidf105ns port-forward <pod-name> 8000:8000
+###############################################################################
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: vllm-dev-<USERNAME_SAFE>-
+  labels:
+    kueue.x-k8s.io/queue-name: eidf105ns-user-queue
+    # Ownership labels — keep these: they record whose Job this is and
+    # what it's for (e.g. kubectl get jobs -l owner=<you>).
+    # 'project' is the strand of work this job is for — e.g. mri_recon,
+    # fairness — NOT the eidf105 group code, which is already implied by
+    # the namespace. Reuse one name across runs so usage reports group
+    # them (see kubmonitor docs/LABELS.md).
+    owner: "<USERNAME>"
+    project: "<RESEARCH_PROJECT>"
+    purpose: interactive
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: vllm-dev
+        owner: "<USERNAME>"            # kubectl get pods -l owner=<you>
+        project: "<RESEARCH_PROJECT>"
+        purpose: interactive
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsUser: <USER_ID>
+        runAsGroup: <GROUP_ID>
+      imagePullSecrets:
+        - name: <PULL_SECRET>
+      containers:
+        - name: vllm
+          image: registry.eidf.ac.uk/eidf105/vllm-eidf:latest
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          args: ["echo 'Pod ready — exec in and run vllm serve'; sleep infinity"]
+          env:
+            # Make Python's print()/logging appear in `kubectl logs`
+            # immediately instead of being buffered until exit.
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: HF_HOME
+              value: "/data/users/<USERNAME>/hf-cache"
+            - name: HF_XET_HIGH_PERFORMANCE
+              value: "1"
+          # Need secrets in your job (HF_TOKEN for gated models, etc.)? Keep
+          # them in a local .env file — never commit it, never bake it into
+          # the image (see README's "Managing secrets"). The wizard can wire
+          # this up for you, or by hand:
+          #   kubectl -n eidf105ns create secret generic my-env --from-env-file=.env
+          # then uncomment:
+          # envFrom:
+          #   - secretRef:
+          #       name: my-env
+          # <SECRET_ENV_HOOK>
+          ports:
+            - containerPort: 8000
+              name: http
+          resources:
+            requests:
+              cpu: 8
+              memory: 64Gi
+              nvidia.com/gpu: 1
+            limits:
+              cpu: 8
+              memory: 64Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - { name: dshm, mountPath: /dev/shm }
+            - { name: nfs,  mountPath: /data }
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
+        - name: nfs
+          nfs:
+            server: 10.24.2.112
+            path: /
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3

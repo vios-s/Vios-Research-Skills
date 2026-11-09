@@ -1,13 +1,14 @@
 ---
 name: arxiv-digest
-category: Discovery & Monitoring
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
 description: >-
   Use this skill when the user wants to monitor or summarise recent arXiv
   activity in a specific research area. Triggers include "what's new on arXiv
   this week in X", "summarise today's arXiv in cs.LG".
+metadata:
+  category: "Discovery & Monitoring"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Arxiv Digest
@@ -20,7 +21,7 @@ A skill for producing focused, signal-dense digests of recent arXiv activity in 
 * Topic-based monitoring across categories ("anything new on diffusion-model unlearning").
 * Bulk triage of an existing arXiv search results page.
 
-Do not invoke for a single-paper deep read — that's the `paper-reader-heilmeier` skill's job.
+Do not invoke for a single-paper deep read — that's the `paper-analyst` skill's job.
 
 ## Workflow
 
@@ -66,7 +67,7 @@ Default digest format:
 End the digest with:
 
 * A 2–3 sentence "trends" paragraph spotting any clusters of method or topic.
-* A list of papers worth deep reading (link to `paper-reader-heilmeier`).
+* A list of papers worth deep reading (link to `paper-analyst`).
 
 ## Anti-patterns
 
@@ -90,4 +91,4 @@ arxiv_digest:
 ## See also
 
 * `literature-review` for deeper synthesis after the digest flags something.
-* `paper-reader-heilmeier` for full-paper analysis of flagged items.
+* `paper-analyst` for full-paper analysis of flagged items.

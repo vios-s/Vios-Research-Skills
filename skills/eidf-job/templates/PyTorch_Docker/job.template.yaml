@@ -1,0 +1,100 @@
+###############################################################################
+# PyTorch dev pod — GROUP TEMPLATE (eidf105) for the EIDF GPU Service
+#
+# Keeps the container alive so you can exec in as yourself (not root) with a
+# conda env active by default. Copy this file, replace every <PLACEHOLDER>:
+#
+#   kubectl -n eidf105ns create -f job.<you>.<project>.yaml
+#   kubectl -n eidf105ns get pods -l owner=<you> -w
+#   kubectl -n eidf105ns exec -it <pod-name> -- /bin/bash
+###############################################################################
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: pytorch-<USERNAME_SAFE>-
+  labels:
+    kueue.x-k8s.io/queue-name: eidf105ns-user-queue
+    # Ownership labels — keep these: they record whose Job this is and
+    # what it's for (e.g. kubectl get jobs -l owner=<you>).
+    # 'project' is the strand of work this job is for — e.g. mri_recon,
+    # fairness — NOT the eidf105 group code, which is already implied by
+    # the namespace. Reuse one name across runs so usage reports group
+    # them (see kubmonitor docs/LABELS.md).
+    owner: "<USERNAME>"
+    project: "<RESEARCH_PROJECT>"
+    purpose: interactive
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: pytorch
+        owner: "<USERNAME>"            # kubectl get pods -l owner=<you>
+        project: "<RESEARCH_PROJECT>"
+        purpose: interactive
+    spec:
+      restartPolicy: Never
+      # Run as YOUR uid/gid (find with `id` on the EIDF login VM) so files
+      # written to the NFS are owned correctly.
+      # (No fsGroup: the NFS export is the whole share; fsGroup would trigger
+      #  a recursive chown of everything mounted.)
+      securityContext:
+        runAsUser: <USER_ID>
+        runAsGroup: <GROUP_ID>
+        runAsNonRoot: true
+      # Pre-provisioned read-only robot account for the group, shared by everyone in it.
+      imagePullSecrets:
+        - name: <PULL_SECRET>
+      containers:
+        - name: pytorch
+          image: registry.eidf.ac.uk/eidf105/pytorch-eidf:<USERNAME>
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          args: ["sleep infinity"]
+          env:
+            # Make Python's print()/logging appear in `kubectl logs`
+            # immediately instead of being buffered until exit.
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: HF_HOME
+              value: "/data/users/<USERNAME>/hf-cache"
+            - name: TORCH_HOME
+              value: "/data/users/<USERNAME>/.torch"
+          # Need secrets in your job (HF token, W&B key, etc.)? Keep them in
+          # a local .env file — never commit it, never bake it into the
+          # image (see README's "Managing secrets"). The wizard can wire this
+          # up for you, or by hand:
+          #   kubectl create secret generic my-env --from-env-file=.env
+          # then uncomment:
+          # envFrom:
+          #   - secretRef:
+          #       name: my-env
+          # <SECRET_ENV_HOOK>
+          resources:
+            requests:
+              cpu: 8
+              memory: 32Gi
+              nvidia.com/gpu: 1
+            limits:
+              cpu: 8
+              memory: 32Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - { name: dshm, mountPath: /dev/shm }
+            - { name: nfs,  mountPath: /data }
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 32Gi
+        - name: nfs
+          nfs:
+            server: 10.24.2.112
+            path: /
+      # Pick a GPU type. Options include:
+      #   NVIDIA-H200                 NVIDIA-H100-80GB-HBM3
+      #   NVIDIA-A100-SXM4-80GB       NVIDIA-A100-SXM4-40GB
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-A100-SXM4-80GB

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate skills/SUMMARY.md from the SKILL.md files in skills/.
 
-Skills are grouped by the `category:` frontmatter field. The category order
+Skills are grouped by the `metadata.category` frontmatter field. The category order
 is defined by CATEGORY_ORDER below; unknown categories go to a trailing
 "Uncategorised" group. Within each category, skills are sorted alphabetically.
 
@@ -35,6 +35,7 @@ CATEGORY_ORDER = [
     "Domain: Computer Vision",
     "Writing",
     "Review & Dissemination",
+    "Lab Operations",
     "Community & Infrastructure",
 ]
 
@@ -45,9 +46,11 @@ def parse_frontmatter(text: str) -> dict[str, str]:
         return {}
     fm: dict[str, str] = {}
     for line in fm_match.group(1).splitlines():
-        m = re.match(r"^(\w[\w-]*):\s*(.+)$", line)
-        if m:
-            fm[m.group(1)] = m.group(2).strip().strip('"').strip("'")
+        # Nested keys (e.g. `metadata:` -> `  category: ...`) are flattened;
+        # a top-level key of the same name wins.
+        m = re.match(r"^(\s*)(\w[\w-]*):\s*(.+)$", line)
+        if m and (not m.group(1) or m.group(2) not in fm):
+            fm[m.group(2)] = m.group(3).strip().strip('"').strip("'")
     return fm
 
 
