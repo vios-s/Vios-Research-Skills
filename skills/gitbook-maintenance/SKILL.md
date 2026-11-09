@@ -1,10 +1,11 @@
 ---
 name: gitbook-maintenance
-category: Community & Infrastructure
 description: Use this skill when maintaining the Vios Research Skills library structure — adding new skills, updating SUMMARY.md, fixing frontmatter, or helping contributors follow the skill template. Triggers include "add a new skill to the library", "update the skills library", "scaffold a new skill", "fix SUMMARY.md", "check skill frontmatter", "how do I contribute a skill", or "help me write the frontmatter for my skill". Do not use for writing the research content of skills — this skill is about library structure and contributor tooling only.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Community & Infrastructure"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # GitBook Maintenance
@@ -36,7 +37,7 @@ GitHub (source of truth) ──── git push ────▶ GitBook (human UI
 ### Step 1. Choose a name and category
 
 - Name: `kebab-case`, matches the folder name exactly.
-- Category: one of the 8 pipeline stages (see CONTRIBUTING.md).
+- Category: one of the valid categories listed in CONTRIBUTING.md.
 - Check that no existing skill already covers the same trigger — use `npx skills list` to browse.
 
 ### Step 2. Scaffold the file
@@ -50,11 +51,12 @@ Create `skills/<your-skill-name>/SKILL.md` using this exact template:
 ```markdown
 ---
 name: your-skill-name
-category: <one of the 8 categories>
 description: Use this skill when [trigger]. Triggers include "[example 1]", "[example 2]". Handles [scope]. Do not use for [out-of-scope].
-version: 0.1.0
-author: Your Name, VIOS Lab
 license: MIT
+metadata:
+  category: "<one of the valid categories>"
+  version: "0.1.0"
+  author: "Your Name, VIOS Lab"
 ---
 
 # Human-Readable Title
@@ -120,7 +122,8 @@ Common issues:
 - `description` shorter than 100 characters — expand it
 - `description` does not start with "Use this skill" — fix the opening phrase
 - `name` does not match folder name — rename one or the other
-- `category` is not one of the 8 valid values — pick from the list in CONTRIBUTING.md
+- `metadata.category` is not one of the valid values — pick from the list in CONTRIBUTING.md
+- `unexpected top-level field(s)` — only `name`, `description`, `license`, `compatibility`, `metadata` and `allowed-tools` may sit at the top level (Agent Skills spec); move `category`, `version` and `author` under `metadata:`
 
 **GitBook committed a file that changed SUMMARY.md format:**
 GitBook should not modify SUMMARY.md (it is managed by the generator script). If it does:

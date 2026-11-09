@@ -11,11 +11,11 @@ Each entry in the sidebar is a self-contained skill module. The page you're read
 ## How to use this library
 
 - **As a human:** browse the sidebar, copy snippets, suggest edits via the pencil icon (top-right) or a GitHub PR.
-- **As an AI client:** `npx skills add vios-s/Vios-Research-Skills` drops the skills into your agent's skills directory if Node.js is already installed. New users can run the setup script in the repository README, which checks for `node` and `npx` and installs Node.js LTS first when needed. Compatible with Claude Code, Cursor, Codex, and Gemini CLI.
+- **As an AI client:** install as a Claude Code plugin, a Gemini CLI extension, or with `npx skills add vios-s/Vios-Research-Skills -g` for any Agent Skills client (Codex, Cursor, GitHub Copilot, OpenCode, …). See the repository README for each route.
 
 ## Scope
 
-Skills here follow the full research pipeline across eleven stages:
+Skills here follow the full research pipeline across twelve stages:
 
 | Stage | What it covers |
 |-------|---------------|
@@ -27,7 +27,8 @@ Skills here follow the full research pipeline across eleven stages:
 | **Domain: Causality** | Causal DAGs, causal discovery, identifiability, counterfactuals, SCMs |
 | **Domain: Computer Vision** | General CV methods, benchmarking, representation learning |
 | **Writing** | Paper drafting, rebuttals, grant writing |
-| **Review & Dissemination** | Pre-submission checks, venue-specific review |
+| **Review & Dissemination** | Internal meta-review, revision lock, pre-submission checks, venue-specific review |
+| **Lab Operations** | EIDF GPU jobs, theme meetings |
 | **Community & Infrastructure** | Adding skills, maintaining the library |
 
 ## Skills at a glance
@@ -36,13 +37,14 @@ Skills here follow the full research pipeline across eleven stages:
 |----------|--------|
 | Discovery & Monitoring | `arxiv-digest` |
 | Reading & Analysis | `literature-review`, `paper-analyst` |
-| Ideation & Hypothesis | `research-question-framing` |
+| Ideation & Hypothesis | `research-question-framing`, `project-idea-pitch` |
 | Domain: Medical Imaging | `cardiac-mri-analysis`, `fairness-medical-imaging`, `medical-image-synthesis` |
 | Domain: Plant Phenotyping | `plant-phenotyping` |
 | Domain: Causality | `causal-dag-builder`, `causal-discovery` |
 | Domain: Computer Vision | `pytorch-segmentation` |
-| Writing | `research-paper-writing`, `paper-rebuttal-helper` |
-| Review & Dissemination | `pre-submission-review`, `venue-reviewer` |
+| Writing | `research-paper-writing`, `paper-skeleton-lock`, `paper-rebuttal-helper` |
+| Review & Dissemination | `internal-meta-review`, `revision-lock-tracker`, `pre-submission-review`, `venue-reviewer` |
+| Lab Operations | `eidf-job`, `theme-meeting-prep` |
 | Community & Infrastructure | `gitbook-maintenance`, `skill-writer` |
 
 ## Contributing
@@ -111,9 +113,11 @@ Anti-patterns must be specific to this skill, not generic writing advice. Each o
 
 - **Plain Markdown only.** No GitBook-specific syntax (`{% hint %}`, `{% tabs %}`, `{% stepper %}`). These render in GitBook but appear as raw text when an AI agent reads the file via the Agent Skills installer.
 - **No `README.md` inside skill folders.** The linter and GitBook both expect `SKILL.md` as the per-folder file.
-- **`category:` is required** and must be one of the valid pipeline stages (see CONTRIBUTING.md for the full list). Invalid categories fail CI. Quote values that contain a colon: `category: "Domain: Medical Imaging"`.
+- **Agent Skills spec fields only at the top level**: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Anything else fails CI and the reference validator.
+- **`metadata.category` is required** and must be one of the valid pipeline stages (see CONTRIBUTING.md for the full list). Invalid categories fail CI. All `metadata` values are quoted strings: `category: "Domain: Medical Imaging"`, `version: "0.1.0"`.
 - **`name:` must match the folder name exactly** (kebab-case). A mismatch fails CI.
-- **`description:` must be ≥ 100 characters** and start with `"Use this skill"`.
+- **`description:` must be 100–1024 characters** and start with `"Use this skill"`.
+- **`SKILL.md` stays under 500 lines.** Put long reference material or templates in sibling files (e.g. `references/`, `templates/`) and point to them by relative path.
 
 ### How to test a skill before submitting
 

@@ -1,10 +1,11 @@
 ---
 name: paper-rebuttal-helper
-category: Writing
 description: Use this skill when the user has received peer review comments and needs to write a rebuttal or author response. Triggers include "write my rebuttal", "respond to reviewers", "how do I address this comment", "reviewer says X, how do I respond", "help me triage these reviews", or pasting review text into the conversation. Handles triage of major vs. minor concerns, response strategy, draft writing, and prioritisation of additional experiments. Do not use for writing the original paper — use research-paper-writing instead; do not use for writing a new paper from scratch after rejection.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Writing"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Paper Rebuttal Helper

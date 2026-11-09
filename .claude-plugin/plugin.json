@@ -1,0 +1,12 @@
+{
+  "name": "vios-research-skills",
+  "version": "1.1.0",
+  "description": "Agent Skills for AI, causality and medical-imaging research: the full paper pipeline, VIOS stage gates, and EIDF GPU jobs.",
+  "author": {
+    "name": "VIOS Lab, University of Edinburgh",
+    "url": "https://vios.science/"
+  },
+  "homepage": "https://github.com/vios-s/Vios-Research-Skills",
+  "repository": "https://github.com/vios-s/Vios-Research-Skills",
+  "license": "MIT"
+}

@@ -19,10 +19,12 @@ This guide explains how to create a private fork of this library — useful if y
 ## Step 2. Install from your fork
 
 ```bash
-npx skills add your-org/Your-Research-Skills
+npx skills add your-org/Your-Research-Skills -g
 ```
 
 This installs skills from your fork, not the VIOS upstream. Your private skills stay private.
+
+To also install the fork as a Claude Code plugin or Gemini CLI extension, rename it first: change `name` in `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json` and `gemini-extension.json` (e.g. to `your-org-research-skills`) so it does not clash with the VIOS upstream if both are installed.
 
 ## Step 3. Connect your own GitBook space (optional)
 
@@ -101,5 +103,5 @@ irm https://raw.githubusercontent.com/your-org/Your-Research-Skills/main/install
 ## Tips
 
 - Keep private skills in a separate directory prefix (e.g., `skills/private-*`) to make upstream merges cleaner.
-- Tag stable versions of your fork with git tags (`v0.1.0`, `v0.2.0`) so team members can pin to a known-good state: `npx skills add your-org/Your-Research-Skills --pin v0.2.0`.
-- If you want some skills from VIOS and some private ones, you can install both: `npx skills add vios-s/Vios-Research-Skills` and `npx skills add your-org/Private-Skills` simultaneously.
+- Tag stable versions of your fork with git tags (`v0.1.0`, `v0.2.0`) so team members can pin to a known-good state: `npx skills add your-org/Your-Research-Skills@v0.2.0 -g` (or `#<branch>` for a branch).
+- If you want some skills from VIOS and some private ones, you can install both: `npx skills add vios-s/Vios-Research-Skills -g` and `npx skills add your-org/Private-Skills -g` simultaneously.

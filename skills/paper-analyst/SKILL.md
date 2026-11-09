@@ -1,10 +1,11 @@
 ---
 name: paper-analyst
-category: Reading & Analysis
 description: Use this skill when the user wants to deeply analyse a single academic paper — beyond summarising, into methodology validity, contribution clarity, and implications. Triggers include "analyse this paper", "break down this paper", "what are the weaknesses of X", "Heilmeier catechism on this paper", "critically read this", or providing a PDF/arXiv link for deep reading. Do not use for surveys across multiple papers — use literature-review instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Reading & Analysis"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Paper Analyst

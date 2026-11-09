@@ -1,10 +1,11 @@
 ---
 name: pytorch-segmentation
-category: "Domain: Computer Vision"
 description: Use this skill when implementing or evaluating image segmentation in PyTorch. Triggers include "implement semantic segmentation", "which loss function for segmentation", "compute mIoU in PyTorch", "set up a UNet with segmentation_models_pytorch", "evaluate segmentation with torchmetrics", "my Dice score is wrong", "class imbalance in segmentation", "multi-class segmentation evaluation", or "benchmark segmentation models". Handles architecture selection, loss functions, metric computation, data pipelines, and evaluation protocol. Do not use for instance segmentation benchmarks like COCO — use a separate detection skill.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Domain: Computer Vision"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # PyTorch Segmentation

@@ -1,8 +1,8 @@
 # Vios Research Skills
 
-A curated library of [Agent Skills](https://github.com/vercel-labs/ai-sdk-preview-agent-skills) for AI, causality, and medical-imaging research — maintained by the [VIOS Lab](https://vios.science/) at the University of Edinburgh.
+A curated library of [Agent Skills](https://agentskills.io/) for AI, causality, and medical-imaging research — maintained by the [VIOS Lab](https://vios.science/) at the University of Edinburgh.
 
-Each skill is a self-contained `SKILL.md` that any Agent-Skills-compatible client — **Claude Code, Cursor, Codex, Gemini CLI** — can install and invoke automatically when you describe a matching task.
+Each skill is a self-contained `SKILL.md` that any Agent-Skills-compatible client — **Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot, OpenCode** — can install and invoke automatically when you describe a matching task.
 
 ```mermaid
 flowchart TD
@@ -15,10 +15,10 @@ flowchart TD
 
     A["🔍 Discovery & Monitoring\narxiv-digest"]:::pipe
     B["📖 Reading & Analysis\nliterature-review · paper-analyst"]:::pipe
-    C["💡 Ideation & Hypothesis\nresearch-question-framing"]:::pipe
+    C["💡 Ideation & Hypothesis\nresearch-question-framing · project-idea-pitch"]:::pipe
     D["🔬 Methodology\nmetrics · ablation · code · tools"]:::pipe
-    E["✍️ Writing\nresearch-paper-writing · paper-rebuttal-helper"]:::pipe
-    F["🔎 Review & Dissemination\npre-submission-review · venue-reviewer"]:::pipe
+    E["✍️ Writing\nresearch-paper-writing · paper-skeleton-lock · paper-rebuttal-helper"]:::pipe
+    F["🔎 Review & Dissemination\ninternal-meta-review · revision-lock-tracker\npre-submission-review · venue-reviewer"]:::pipe
     G["⚙️ Community & Infrastructure\ngitbook-maintenance · skill-writer"]:::infra
 
     A --> B --> C --> D --> E --> F --> G
@@ -29,33 +29,62 @@ flowchart TD
         PP["🌿 Plant Phenotyping\nplant-phenotyping"]:::plant
         CA["🔗 Causality\ncausal-dag-builder · causal-discovery"]:::causal
         CV["🖥️ Computer Vision\npytorch-segmentation"]:::cv
+        LO["🧪 Lab Operations\neidf-job · theme-meeting-prep"]:::infra
     end
 
     D -.->|use at any stage| MI
     D -.-> PP
     D -.-> CA
     D -.-> CV
+    D -.-> LO
 ```
 
 ---
 
-## Quick start
+## Install
 
-If you already have Node.js installed:
+Pick **one** route per client. Installing the same skills twice (e.g. as a plugin *and* with `npx skills`) makes the client list every skill twice.
+
+### Claude Code — plugin (recommended)
+
+In Claude Code:
+
+```
+/plugin marketplace add vios-s/Vios-Research-Skills
+/plugin install vios-research-skills@vios-research-skills
+```
+
+Skills appear as `/vios-research-skills:<skill>` and also fire automatically. Turn on auto-update for the marketplace in `/plugin` → Marketplaces to receive new skills.
+
+### Gemini CLI — extension
 
 ```bash
-npx skills add vios-s/Vios-Research-Skills
+gemini extensions install https://github.com/vios-s/Vios-Research-Skills --auto-update
 ```
 
-That's it. The skills drop into `~/.agents/skills/` and your AI agent starts using them on the next session.
+### Any Agent Skills client — `skills` CLI
 
-If you do not know whether Node.js is installed, use the setup script below instead. It checks for `node` and `npx`, then installs Node.js LTS first when needed.
+Works for Codex, Antigravity CLI, Cursor, GitHub Copilot, OpenCode, and also Claude Code and Gemini CLI. Needs **Node.js 22.20 or newer**.
 
----
+```bash
+npx skills add vios-s/Vios-Research-Skills -g
+```
 
-## Auto-update (recommended)
+`-g` installs for your user; without it the skills go into the current project only. The CLI keeps one copy in `~/.agents/skills/` and links it into each client you pick (`~/.claude/skills`, `~/.gemini/skills`, `~/.cursor/skills`, …). Update with `npx skills update -g -y`.
 
-Run once to keep skills current every time you start Claude Code:
+| Client | Reads skills from (user level) |
+|--------|--------------------------------|
+| Claude Code | `~/.claude/skills/` (or the plugin above) |
+| Codex CLI | `~/.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` or `~/.agents/skills/` (or the extension above) |
+| Antigravity CLI (`agy`) | `~/.gemini/config/skills/` (project: `.agents/skills/`) |
+| Cursor | `~/.cursor/skills/`, also reads `~/.agents/skills/` and `~/.claude/skills/` |
+| GitHub Copilot / VS Code | `~/.copilot/skills/`, also `~/.agents/skills/` and `~/.claude/skills/` |
+| OpenCode | `~/.config/opencode/skills/`, also `~/.agents/skills/` and `~/.claude/skills/` |
+
+### One-command setup with auto-update
+
+If you don't know whether a recent Node.js is installed, the setup script handles it: it installs Node.js LTS when `node` is missing or older than 22.20, installs every skill for Claude Code, Codex, Gemini CLI, Antigravity CLI, Cursor, GitHub Copilot and OpenCode, and registers a Claude Code `SessionStart` hook that runs `npx skills update -g -y` in the background whenever a new session starts.
 
 **macOS / Linux**
 ```bash
@@ -67,9 +96,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/
 irm https://raw.githubusercontent.com/vios-s/Vios-Research-Skills/main/install/setup.ps1 | iex
 ```
 
-Both scripts install Node.js LTS if `node` or `npx` is missing, install the skills, and register a Claude Code `SessionStart` hook that runs `npx skills update --yes` silently in the background on every session. On macOS/Linux the script uses `nvm`; on Windows it uses `winget` when Node.js is not already available. The hook uses a cross-platform Node.js call — no shell differences between macOS, Linux, and Windows.
-
-To configure the hook manually, copy [`install/claude-code-hook.json`](./install/claude-code-hook.json) into your `~/.claude/settings.json`.
+On macOS/Linux the script uses `nvm`; on Windows it uses `winget`. Re-running it upgrades an older version of the hook in place. To configure the hook by hand, merge [`install/claude-code-hook.json`](./install/claude-code-hook.json) into `~/.claude/settings.json`. Other clients have no session hook: run `npx skills update -g -y` now and then.
 
 ---
 
@@ -79,13 +106,14 @@ To configure the hook manually, copy [`install/claude-code-hook.json`](./install
 |----------|--------|
 | **Discovery & Monitoring** | `arxiv-digest` |
 | **Reading & Analysis** | `literature-review`, `paper-analyst` |
-| **Ideation & Hypothesis** | `research-question-framing` |
+| **Ideation & Hypothesis** | `research-question-framing`, `project-idea-pitch` |
 | **Domain: Medical Imaging** | `cardiac-mri-analysis`, `fairness-medical-imaging`, `medical-image-synthesis` |
 | **Domain: Plant Phenotyping** | `plant-phenotyping` |
 | **Domain: Causality** | `causal-dag-builder`, `causal-discovery` |
 | **Domain: Computer Vision** | `pytorch-segmentation` |
-| **Writing** | `research-paper-writing`, `paper-rebuttal-helper` |
-| **Review & Dissemination** | `pre-submission-review`, `venue-reviewer` |
+| **Writing** | `research-paper-writing`, `paper-skeleton-lock`, `paper-rebuttal-helper` |
+| **Review & Dissemination** | `internal-meta-review`, `revision-lock-tracker`, `pre-submission-review`, `venue-reviewer` |
+| **Lab Operations** | `eidf-job`, `theme-meeting-prep` |
 | **Community & Infrastructure** | `gitbook-maintenance`, `skill-writer` |
 
 Browse human-readable previews on [GitBook](https://app.gitbook.com/o/iKj8iQxX5VVQz0YId3W8/s/JrUZyt5iYQfdGE1vmZnd/) — the same Markdown your agent reads, rendered for humans.

@@ -1,10 +1,11 @@
 ---
 name: causal-discovery
-category: "Domain: Causality"
 description: Use this skill when the user wants to learn or infer causal structure from data — rather than assuming a known DAG. Triggers include "discover causal structure from data", "learn a causal graph", "which algorithm should I use for causal discovery", "PC algorithm or GES", "run FCI on my dataset", "test for causal directions", "does my data have hidden confounders", or "evaluate my causal discovery result". Handles algorithm selection, faithfulness and Markov assumptions, evaluation against ground truth, and limitations of discovery from observational data. Do not use when the DAG is already specified — use causal-dag-builder instead.
-version: 0.1.0
-author: VIOS Lab, University of Edinburgh
 license: MIT
+metadata:
+  category: "Domain: Causality"
+  version: "0.1.0"
+  author: "VIOS Lab, University of Edinburgh"
 ---
 
 # Causal Discovery

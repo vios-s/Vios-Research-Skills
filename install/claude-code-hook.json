@@ -2,10 +2,11 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup",
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"const{spawn}=require('child_process');spawn('npx',['skills','update','--yes'],{detached:true,stdio:'ignore',shell:true}).unref()\""
+            "command": "node -e \"const{spawn}=require('child_process');spawn('npx',['--yes','skills','update','-g','-y'],{detached:true,stdio:'ignore',shell:true}).unref()\""
           }
         ]
       }

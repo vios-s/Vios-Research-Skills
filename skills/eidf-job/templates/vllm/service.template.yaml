@@ -1,0 +1,26 @@
+###############################################################################
+# Service for the vLLM Job — GROUP TEMPLATE (eidf105)
+#
+# Gives the pod a stable in-cluster name so you don't have to look up the
+# random pod name every time. Port-forward the Service instead of the pod:
+#   kubectl -n eidf105ns port-forward svc/vllm-<USERNAME_SAFE> 8000:8000
+#
+# The selector matches the Job's pod labels (app: vllm, owner: <USERNAME>),
+# so one Service per user won't clash with others.
+###############################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-<USERNAME_SAFE>
+  labels:
+    app: vllm
+    owner: "<USERNAME>"
+spec:
+  type: ClusterIP
+  selector:
+    app: vllm
+    owner: "<USERNAME>"
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
