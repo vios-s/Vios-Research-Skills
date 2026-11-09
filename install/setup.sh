@@ -104,6 +104,13 @@ ensure_node() {
   set -u
 
   if ! has_node_tools; then
+    # Official Node.js builds link against libatomic, which minimal
+    # images (e.g. debian-slim) do not ship.
+    if node --version 2>&1 | grep -q 'libatomic'; then
+      echo "Error: Node.js needs the libatomic system library, which is not installed." >&2
+      echo "Install it (Debian/Ubuntu: sudo apt-get install libatomic1; Fedora/RHEL: sudo dnf install libatomic) and rerun this script." >&2
+      exit 1
+    fi
     echo "Error: Node.js LTS was installed, but node >= 22.20 and npx are not both available." >&2
     echo "Open a new terminal and rerun this script." >&2
     exit 1
