@@ -77,7 +77,7 @@ npx skills add vios-s/Vios-Research-Skills -g
 | Claude Code | `~/.claude/skills/` (or the plugin above) |
 | Codex CLI | `~/.agents/skills/` |
 | Gemini CLI | `~/.gemini/skills/` or `~/.agents/skills/` (or the extension above) |
-| Antigravity CLI (`agy`) | `~/.gemini/config/skills/` (project: `.agents/skills/`) |
+| Antigravity CLI (`agy`) | `~/.gemini/antigravity-cli/skills/` (where `skills` 1.7.6 installs) and `~/.gemini/config/skills/`; project: `.agents/skills/` |
 | Cursor | `~/.cursor/skills/`, also reads `~/.agents/skills/` and `~/.claude/skills/` |
 | GitHub Copilot / VS Code | `~/.copilot/skills/`, also `~/.agents/skills/` and `~/.claude/skills/` |
 | OpenCode | `~/.config/opencode/skills/`, also `~/.agents/skills/` and `~/.claude/skills/` |

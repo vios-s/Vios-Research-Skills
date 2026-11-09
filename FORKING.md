@@ -103,5 +103,5 @@ irm https://raw.githubusercontent.com/your-org/Your-Research-Skills/main/install
 ## Tips
 
 - Keep private skills in a separate directory prefix (e.g., `skills/private-*`) to make upstream merges cleaner.
-- Tag stable versions of your fork with git tags (`v0.1.0`, `v0.2.0`) so team members can pin to a known-good state: `npx skills add your-org/Your-Research-Skills@v0.2.0 -g` (or `#<branch>` for a branch).
+- Tag stable versions of your fork with git tags (`v0.1.0`, `v0.2.0`) so team members can pin to a known-good state: `npx skills add your-org/Your-Research-Skills#v0.2.0 -g` (the same `#<ref>` syntax pins a branch).
 - If you want some skills from VIOS and some private ones, you can install both: `npx skills add vios-s/Vios-Research-Skills -g` and `npx skills add your-org/Private-Skills -g` simultaneously.

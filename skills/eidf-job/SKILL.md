@@ -262,6 +262,10 @@ any personal build.)
   (rule of thumb: 8 CPU + 32Gi per GPU; vllm wants more memory).
   Default project quota is ~100 CPU / 1 TiB / **12 GPUs** — requests
   beyond the quota just queue.
+- **vLLM serving: set `--tensor-parallel-size` to the `nvidia.com/gpu`
+  count.** The template ships with `1`; asking for 2 GPUs without changing
+  it leaves one GPU allocated but idle, and a model sized to span both
+  cards runs out of memory on one.
 - GPU model goes in the `nodeSelector`. The authoritative list lives at
   <https://docs.eidf.ac.uk/services/gpuservice/> (see also
   `training/L1_getting_started/`); as of 2025 the valid
@@ -294,13 +298,13 @@ a Dockerfile, or the chat. Replace the `# <SECRET_ENV_HOOK>` marker with:
 ```yaml
           envFrom:
             - secretRef:
-                name: <username>-env
+                name: <username_safe>-env
 ```
 
 and tell the user to create the Secret themselves from a local `.env`:
 
 ```bash
-kubectl -n eidf105ns create secret generic <username>-env --from-env-file=.env
+kubectl -n eidf105ns create secret generic <username_safe>-env --from-env-file=.env
 ```
 
 If no secrets are needed, just delete the `<SECRET_ENV_HOOK>` line.
@@ -346,6 +350,7 @@ let the user decide rather than silently downgrading.
 Apply the requested change (GPUs, image, command, …) and leave the rest
 intact — in particular the labels block, securityContext,
 imagePullSecrets, and the NFS/dshm volumes. Keep requests = limits in
-sync when changing resources. If the file is missing the ownership
+sync when changing resources, and for vLLM jobs keep
+`--tensor-parallel-size` equal to the GPU count. If the file is missing the ownership
 labels (an old hand-written one), add them as part of the edit and
 mention it to the user.
